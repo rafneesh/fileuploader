@@ -1,12 +1,10 @@
 package com.company.service.implementation;
 
 import com.company.service.FileUploaderService;
+import org.apache.commons.io.FileUtils;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
 
 public class HTTPSService implements FileUploaderService {
@@ -26,18 +24,36 @@ public class HTTPSService implements FileUploaderService {
         }
         try {
             URL url = new URL(URL_LOCATION);
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.addRequestProperty("User-Agent", "Mozilla/4.76");
-            //URLConnection connection = url.openConnection();
-            BufferedInputStream stream = new BufferedInputStream(connection.getInputStream());
-            int available = stream.available();
-            byte b[]= new byte[available];
-            stream.read(b);
+
             File file = new File(LOCAL_FILE);
-            OutputStream out  = new FileOutputStream(file);
-            out.write(b);
+
+            //FileUtils.copyURLToFile(url, file);
+
+            InputStream fileInputStream  = url.openStream();
+
+
+            FileOutputStream  out = new FileOutputStream(file+URL_LOCATION.split("/")[URL_LOCATION.split("/").length-1]);
+
+            byte[] buf=new byte[8192];
+            int bytesRead = 0, bytesBuffered = 0;
+
+            while( (bytesRead = fileInputStream.read( buf )) > -1 ) {
+
+                out.write( buf, 0, bytesRead );
+                bytesBuffered += bytesRead;
+                if (bytesBuffered > 1024 * 1024) { //flush after 1MB
+                    System.out.println("File writing..."+bytesBuffered);
+                    bytesBuffered = 0;
+                    out.flush();
+                }
+            }
+
+            out.flush();
+
             System.out.println("File written successfully");
+
             return true;
+
         } catch (Exception e) {
             System.err.println(e);
         }
