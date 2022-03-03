@@ -36,6 +36,7 @@ public class HTTPSService implements FileUploaderService {
             File file = new File(LOCAL_FILE);
             OutputStream out  = new FileOutputStream(file);
             out.write(b);
+            System.out.println("File written successfully");
             return true;
         } catch (Exception e) {
             System.err.println(e);
