@@ -51,7 +51,7 @@ public interface FileUploaderProxy {
             System.err.println("File writing failed");
         }
 
-        System.out.println(result ? "File has been successfully written to the destination!" : "File writing failed!");
+        System.out.println(result ? "File has been successfully written to the destination!" : "Failed for the protocol!"+fullFilePath.split(":")[0]);
 
     }
 

@@ -1,10 +1,11 @@
 package com.company.service.implementation;
 
 import com.company.service.FileUploaderService;
-import org.apache.commons.io.FileUtils;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 
 public class HTTPSService implements FileUploaderService {
     @Override
@@ -12,20 +13,20 @@ public class HTTPSService implements FileUploaderService {
 
         try {
 
-            System.out.println("File writing started");
+            System.out.println("File writing started for HTTP/HTTPS");
 
             URL url = new URL(URL_LOCATION);
 
-            File file = new File(LOCAL_FILE);
+            File file = new File(LOCAL_FILE+URL_LOCATION.split("/")[URL_LOCATION.split("/").length-1]);
 
-            FileUtils.copyURLToFile(url, file);
+            //FileUtils.copyURLToFile(url, file);
 
-           /* InputStream fileInputStream  = url.openStream();
-
-
-            FileOutputStream  out = new FileOutputStream(file+URL_LOCATION.split("/")[URL_LOCATION.split("/").length-1]);
+            InputStream fileInputStream  = url.openStream();
 
 
+            FileOutputStream out = new FileOutputStream(file);
+
+            System.out.println("Size of the HTTP/HTTPS file:"+this.getFileSize(url));
 
             byte[] buf=new byte[8192];
             int bytesRead = 0, bytesBuffered = 0;
@@ -41,8 +42,8 @@ public class HTTPSService implements FileUploaderService {
                 }
             }
 
-            out.flush();*/
-            System.out.println("File written successfully");
+            out.flush();
+            System.out.println("HTTP/HTTPS File written successfully");
 
             return true;
 
@@ -52,5 +53,24 @@ public class HTTPSService implements FileUploaderService {
 
         return false;
 
+    }
+
+    @Override
+    public int getFileSize(URL url) {
+        URLConnection conn = null;
+        try {
+            conn = url.openConnection();
+            if(conn instanceof HttpURLConnection) {
+                ((HttpURLConnection)conn).setRequestMethod("HEAD");
+            }
+            conn.getInputStream();
+            return conn.getContentLength();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if(conn instanceof HttpURLConnection) {
+                ((HttpURLConnection)conn).disconnect();
+            }
+        }
     }
 }
