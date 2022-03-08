@@ -1,75 +1,106 @@
 package com.company.service.implementation;
 
 import com.company.service.FileUploaderService;
+import org.asynchttpclient.*;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.util.Optional;
 
 public class HTTPSService implements FileUploaderService {
+
+
+    AsyncHttpClient client = Dsl.asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setReadTimeout(10000000));
+
     @Override
-    public boolean write(String URL_LOCATION, String LOCAL_FILE) {
+    public Optional<File> write(String URL_LOCATION, String LOCAL_FILE) {
+
+        Optional<URL> url = Optional.empty();
+
+        Optional<File> file = Optional.of(new File(LOCAL_FILE + URL_LOCATION.split("/")[URL_LOCATION.split("/").length - 1]));
+
+        long remoteFileSize = -1;
+
+        long fileSize = -1;
 
         try {
 
-            System.out.println("File writing started for HTTP/HTTPS");
+            System.out.println(Thread.currentThread().getId() + " File writing started for HTTP/HTTPS");
 
-            URL url = new URL(URL_LOCATION);
+            url = Optional.of(new URL(URL_LOCATION));
 
-            File file = new File(LOCAL_FILE+URL_LOCATION.split("/")[URL_LOCATION.split("/").length-1]);
+            remoteFileSize = getFileSize(url.get());
 
-            //FileUtils.copyURLToFile(url, file);
+            System.out.println(Thread.currentThread().getId() + " File on the server is, HTTP/HTTPS:"+remoteFileSize);
 
-            InputStream fileInputStream  = url.openStream();
+            if(remoteFileSize<=0){
 
+                System.out.println(Thread.currentThread().getId() + " File on the server is empty, HTTP/HTTPS");
 
-            FileOutputStream out = new FileOutputStream(file);
-
-            System.out.println("Size of the HTTP/HTTPS file:"+this.getFileSize(url));
-
-            byte[] buf=new byte[8192];
-            int bytesRead = 0, bytesBuffered = 0;
-
-            while( (bytesRead = fileInputStream.read( buf )) > -1 ) {
-
-                out.write( buf, 0, bytesRead );
-                bytesBuffered += bytesRead;
-                if (bytesBuffered > 1024 * 1024) { //flush after 1MB
-                    System.out.println("Bytes..."+bytesBuffered);
-                    bytesBuffered = 0;
-                    out.flush();
-                }
+                return file;
             }
 
-            out.flush();
-            System.out.println("HTTP/HTTPS File written successfully");
+            FileOutputStream out = new FileOutputStream(file.get());
 
-            return true;
+            ReadableByteChannel readableByteChannel = Channels.newChannel(url.get().openStream());
+
+            FileChannel channel = out.getChannel();
+
+            try (out; readableByteChannel; channel) {
+
+                channel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+
+            }
+
+            fileSize = file.get().length();
+
+            System.out.println(Thread.currentThread().getId() + " HTTP/HTTPS File written successfully/partially, remote file size:"+remoteFileSize+" and written file size:"+fileSize);
+
+            return file;
 
         } catch (Exception e) {
+
             System.err.println(e);
         }
+        finally {
 
-        return false;
+            if(remoteFileSize!=fileSize){
+
+                System.out.println(Thread.currentThread().getId() + " HTTP/HTTPS File size miss matches, going to delete the partial file, Size on Server:"+remoteFileSize+" On Local:"+fileSize);
+
+                throw new RuntimeException("File size miss matches");
+
+            }
+        }
+
+        return file;
 
     }
 
     @Override
-    public int getFileSize(URL url) {
+    public long getFileSize(URL url) {
         URLConnection conn = null;
         try {
             conn = url.openConnection();
-            if(conn instanceof HttpURLConnection) {
-                ((HttpURLConnection)conn).setRequestMethod("HEAD");
+            if (conn instanceof HttpURLConnection) {
+                ((HttpURLConnection) conn).setRequestMethod("HEAD");
             }
             conn.getInputStream();
-            return conn.getContentLength();
+
+            long length = conn.getContentLengthLong();
+
+            return length;
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            if(conn instanceof HttpURLConnection) {
-                ((HttpURLConnection)conn).disconnect();
+            if (conn instanceof HttpURLConnection) {
+                ((HttpURLConnection) conn).disconnect();
             }
         }
     }

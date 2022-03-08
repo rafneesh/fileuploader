@@ -9,6 +9,7 @@ public class PropertySingleton {
     private PropertySingleton(){}
 
     public static String DESTINATION = null;  //Configure
+    public static int NTHREDS = 10;
 
     static {
 
@@ -20,6 +21,7 @@ public class PropertySingleton {
             prop.load(input);
 
             DESTINATION = prop.getProperty("location");
+            NTHREDS = Integer.valueOf(prop.getProperty("threads"));
 
             // get the property value and print it out
             System.out.println("Configured Destination Location : " + DESTINATION);

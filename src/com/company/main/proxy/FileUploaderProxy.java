@@ -27,18 +27,18 @@ public interface FileUploaderProxy {
                 dstFile.mkdirs();
             }
             return true;
-        }catch (Exception e){
-            System.err.println("Error creating/accessing the destination folder");
+        } catch (Exception e) {
+            System.err.println(Thread.currentThread().getId() + " Error creating/accessing the destination folder");
         }
         return false;
     }
 
     static void writeFile(String fullFilePath) {
 
-        boolean result = false;
+        Optional<File> result = Optional.empty();
 
-        if(!makeDirectory(PropertySingleton.DESTINATION)){
-            System.err.println("File writing failed at directory creation");
+        if (!makeDirectory(PropertySingleton.DESTINATION)) {
+            System.err.println(Thread.currentThread().getId() + " File writing failed at directory creation");
         }
 
         try {
@@ -49,12 +49,30 @@ public interface FileUploaderProxy {
 
         } catch (Exception e) {
             System.err.println("File writing failed");
+            deleteFile(result.get());
         }
 
-        System.out.println(result ? "File has been successfully written to the destination!" : "Failed for the protocol!"+fullFilePath.split(":")[0]);
+        System.out.println(Thread.currentThread().getId() + (result.isPresent() ? " File has been successfully written to the destination!" : Thread.currentThread().getId() + " Failed for the protocol!" + fullFilePath.split(":")[0]));
 
     }
 
+
+    static boolean deleteFile(File file) {
+
+        System.out.println(Thread.currentThread().getId() + "Going for File Deletion If Exists");
+        try {
+
+            if(file.exists())
+                file.delete();
+
+            System.out.println(Thread.currentThread().getId() + "File Deleted Successfully/Not exists");
+
+            return true;
+        } catch (Exception e) {
+            System.err.println(Thread.currentThread().getId() + " Error deleting the file");
+        }
+        return false;
+    }
 
 
 }

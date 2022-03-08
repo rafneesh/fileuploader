@@ -1,13 +1,15 @@
 package com.company.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Optional;
 
 public interface FileUploaderService {
 
-    public boolean write(String filePath, String destination);
+    public Optional<File> write(String filePath, String destination);
 
-    public int getFileSize(URL url);
+    public long getFileSize(URL url);
 }
