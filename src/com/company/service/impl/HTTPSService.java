@@ -1,9 +1,7 @@
-package com.company.service.implementation;
+package com.company.service.impl;
 
 import com.company.service.FileUploaderService;
-import org.asynchttpclient.AsyncHttpClient;
-import org.asynchttpclient.DefaultAsyncHttpClientConfig;
-import org.asynchttpclient.Dsl;
+import org.asynchttpclient.*;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -14,8 +12,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Optional;
 
-
-public class FTPService implements FileUploaderService {
+public class HTTPSService implements FileUploaderService {
 
 
     AsyncHttpClient client = Dsl.asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setReadTimeout(10000000));
@@ -25,7 +22,7 @@ public class FTPService implements FileUploaderService {
 
         Optional<URL> url = Optional.empty();
 
-        Optional<File> file = Optional.empty();
+        Optional<File> file = Optional.of(new File(LOCAL_FILE + URL_LOCATION.split("/")[URL_LOCATION.split("/").length - 1]));
 
         long remoteFileSize = -1;
 
@@ -47,8 +44,6 @@ public class FTPService implements FileUploaderService {
 
                 return file;
             }
-
-            file = Optional.of(new File(LOCAL_FILE + URL_LOCATION.split("/")[URL_LOCATION.split("/").length - 1]));
 
             FileOutputStream out = new FileOutputStream(file.get());
 

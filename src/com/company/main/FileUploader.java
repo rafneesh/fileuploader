@@ -2,7 +2,8 @@ package com.company.main;
 
 
 import com.company.main.proxy.FileUploaderProxy;
-import com.company.misc.PropertySingleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -12,11 +13,13 @@ import java.util.concurrent.TimeUnit;
 
 public class FileUploader {
 
+    static Logger log = LoggerFactory.getLogger(FileUploader.class);
+
     public static void main(String[] args) throws InterruptedException {
 
-        System.out.println("FileUploaderFactory: main()");
+        log.info("FileUploaderFactory: main()");
 
-        ExecutorService executor = Executors.newFixedThreadPool(PropertySingleton.NTHREDS);
+        ExecutorService executor = Executors.newCachedThreadPool();
 
         Arrays.asList(args).forEach((item)-> executor.execute(()-> FileUploaderProxy.writeFile(item)));
 
@@ -24,7 +27,7 @@ public class FileUploader {
         // Wait until all threads are finish
         executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
-        System.out.println("Finished all threads");
+        log.info("Finished all threads");
 
         System.exit(0);
 

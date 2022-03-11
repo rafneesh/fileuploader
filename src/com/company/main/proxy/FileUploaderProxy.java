@@ -1,7 +1,7 @@
 package com.company.main.proxy;
 
-import com.company.main.FileUploaderFactory;
-import com.company.misc.PropertySingleton;
+import com.company.component.FileUploaderFactory;
+import com.company.config.PropertySingleton;
 import com.company.service.FileUploaderService;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package com.company.misc;
+package com.company.config;
 
 import java.io.FileInputStream;
 import java.io.InputStream;

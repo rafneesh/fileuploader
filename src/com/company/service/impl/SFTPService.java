@@ -1,4 +1,4 @@
-package com.company.service.implementation;
+package com.company.service.impl;
 
 import com.company.service.FileUploaderService;
 import com.jcraft.jsch.*;
@@ -22,20 +22,11 @@ public class SFTPService implements FileUploaderService {
             JSch jsch = new JSch();
             URI uri = new URI(URL_LOCATION);
 
-
             String host = uri.getHost();
             int port = uri.getPort();
             String username = uri.getRawUserInfo().split(":")[0];
             String password = uri.getRawUserInfo().split(":")[1];
             String source = uri.getPath();
-
-           /* System.out.println("Host:" + host);
-            System.out.println("Port:" + port);
-            System.out.println("Username:" + username);
-            System.out.println("Password:" + password);
-            System.out.println("Source:" + source);
-
-            System.out.println(URL_LOCATION);*/
 
             Session session = jsch.getSession(username, host, port);
             session.setPassword(password);

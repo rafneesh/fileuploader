@@ -1,10 +1,10 @@
-package com.company.main;
+package com.company.component;
 
-import com.company.misc.Protocol;
+import com.company.enums.Protocol;
 import com.company.service.FileUploaderService;
-import com.company.service.implementation.HTTPSService;
-import com.company.service.implementation.SFTPService;
-import com.company.service.implementation.FTPService;
+import com.company.service.impl.HTTPSService;
+import com.company.service.impl.SFTPService;
+import com.company.service.impl.FTPService;
 
 import java.util.HashMap;
 import java.util.Locale;
