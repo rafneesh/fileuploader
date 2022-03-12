@@ -19,8 +19,12 @@
       <root url="jar://$PROJECT_DIR$/lib/async-http-client-2.12.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/async-http-client-netty-utils-2.12.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/jakarta.activation-1.2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/log4j-1.2-api-2.12.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/java.base-2018-04-10.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/java.base-2018-04-10.jar!/META-INF/modules/java.base/classes" />
+    </SOURCES>
   </library>
 </component>
