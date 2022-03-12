@@ -3,15 +3,14 @@ package com.rafne.filedownloader.proxy;
 import com.rafne.filedownloader.component.FileDownloaderFactory;
 import com.rafne.filedownloader.config.PropertySingleton;
 import com.rafne.filedownloader.service.FileDownloaderService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public interface FileDownloaderProxy {
 
-    static Logger log = LoggerFactory.getLogger(FileDownloaderProxy.class);
+    static Logger log = Logger.getLogger(FileDownloaderProxy.class.getName());
 
     static final FileDownloaderFactory factory = new FileDownloaderFactory();
 
@@ -32,7 +31,7 @@ public interface FileDownloaderProxy {
             }
             return true;
         } catch (Exception e) {
-            log.error("Thread Id:" + Thread.currentThread().getId() + " Error creating/accessing the destination folder");
+            log.warning("Thread Id:" + Thread.currentThread().getId() + " Error creating/accessing the destination folder");
         }
         return false;
     }
@@ -42,7 +41,7 @@ public interface FileDownloaderProxy {
         Optional<File> result = Optional.empty();
 
         if (!makeDirectory(PropertySingleton.DESTINATION)) {
-            log.error("Thread Id:" + Thread.currentThread().getId() + " Failed at directory creation");
+            log.warning("Thread Id:" + Thread.currentThread().getId() + " Failed at directory creation");
         }
 
         try {
@@ -52,7 +51,7 @@ public interface FileDownloaderProxy {
             result = service.get().write(fullFilePath, PropertySingleton.DESTINATION);
 
         } catch (Exception e) {
-            log.error("Thread Id:" + Thread.currentThread().getId() +"File writing failed");
+            log.warning("Thread Id:" + Thread.currentThread().getId() +"File writing failed");
             deleteFile(result.get());
         }
 
@@ -63,17 +62,17 @@ public interface FileDownloaderProxy {
 
     static boolean deleteFile(File file) {
 
-        log.debug("Thread Id:" + Thread.currentThread().getId() + "Going for File Deletion If Exists");
+        log.finest("Thread Id:" + Thread.currentThread().getId() + "Going for File Deletion If Exists");
         try {
 
             if(file.exists())
                 file.delete();
 
-            log.debug("Thread Id:" + Thread.currentThread().getId() + "File Deleted Successfully/Not exists");
+            log.warning("Thread Id:" + Thread.currentThread().getId() + "File Deleted Successfully/Not exists");
 
             return true;
         } catch (Exception e) {
-            log.error("Thread Id:" + Thread.currentThread().getId() + " Error deleting the file");
+            log.warning("Thread Id:" + Thread.currentThread().getId() + " info deleting the file");
         }
         return false;
     }

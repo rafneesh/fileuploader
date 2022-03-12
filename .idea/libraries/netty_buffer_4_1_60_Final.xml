@@ -15,16 +15,13 @@
       <root url="jar://$PROJECT_DIR$/lib/netty-transport-native-kqueue-4.1.60.Final-osx-x86_64.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/netty-transport-native-unix-common-4.1.60.Final.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/reactive-streams-1.0.3.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/slf4j-api-1.7.30.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/async-http-client-2.12.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/async-http-client-netty-utils-2.12.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/jakarta.activation-1.2.2.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/log4j-1.2-api-2.12.4.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/java.base-2018-04-10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/slf4j-api-1.7.30.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/slf4j-simple-1.6.1.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$PROJECT_DIR$/lib/java.base-2018-04-10.jar!/META-INF/modules/java.base/classes" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

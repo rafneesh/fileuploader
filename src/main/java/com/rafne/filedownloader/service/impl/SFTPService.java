@@ -2,16 +2,15 @@ package com.rafne.filedownloader.service.impl;
 
 import com.jcraft.jsch.*;
 import com.rafne.filedownloader.service.FileDownloaderService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URI;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class SFTPService implements FileDownloaderService {
 
-    static Logger log = LoggerFactory.getLogger(SFTPService.class);
+    static java.util.logging.Logger log = Logger.getLogger(SFTPService.class.getName());
 
     @Override
     public Optional<File> write(String URL_LOCATION, String LOCAL_FILE) {
@@ -28,12 +27,12 @@ public class SFTPService implements FileDownloaderService {
 
             if(remoteFileSize<=0){
 
-                log.debug("Thread Id:" +Thread.currentThread().getId() + " File on the server is empty, HTTP/HTTPS");
+                log.info("Thread Id:" +Thread.currentThread().getId() + " File on the server is empty, HTTP/HTTPS");
 
                 return file;
             }
 
-            log.debug("Thread Id:" + Thread.currentThread().getId() + " File writing started for SFTP");
+            log.info("Thread Id:" + Thread.currentThread().getId() + " File writing started for SFTP");
 
             //demo:password@test.rebex.net:22/pub/example/readme.txt
             JSch jsch = new JSch();
@@ -61,10 +60,10 @@ public class SFTPService implements FileDownloaderService {
             SftpATTRS sftpATTRS = sftpChannel.lstat(source);
             sftpChannel.exit();
 
-            log.debug("Thread Id:" + Thread.currentThread().getId() + " File Size SFTP:" + sftpATTRS.getSize());
+            log.info("Thread Id:" + Thread.currentThread().getId() + " File Size SFTP:" + sftpATTRS.getSize());
 
 
-            log.debug("Thread Id:" + Thread.currentThread().getId() + " File written successfully SFTP");
+            log.info("Thread Id:" + Thread.currentThread().getId() + " File written successfully SFTP");
             return file;
 
         } catch (Exception e) {
@@ -111,7 +110,7 @@ public class SFTPService implements FileDownloaderService {
             return sftpATTRS.getSize();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warning(e.toString());
             throw new RuntimeException(e);
         } finally {
             sftpChannel.disconnect();

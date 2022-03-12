@@ -4,8 +4,6 @@ import com.rafne.filedownloader.service.FileDownloaderService;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.asynchttpclient.Dsl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,11 +14,12 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 
 public class FTPService implements FileDownloaderService {
 
-    static Logger log = LoggerFactory.getLogger(FTPService.class);
+    static java.util.logging.Logger log = Logger.getLogger(FTPService.class.getName());
 
     AsyncHttpClient client = Dsl.asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setReadTimeout(Integer.MAX_VALUE));
 
@@ -40,7 +39,7 @@ public class FTPService implements FileDownloaderService {
 
             if(remoteFileSize<=0){
 
-                log.debug("Thread Id:" +Thread.currentThread().getId() + " File on the server is empty, FTP");
+                log.info("Thread Id:" +Thread.currentThread().getId() + " File on the server is empty, FTP");
 
                 return file;
             }
@@ -48,9 +47,9 @@ public class FTPService implements FileDownloaderService {
 
             Optional<URL> url = Optional.empty();
 
-            log.debug("Thread Id:" + Thread.currentThread().getId() + " File writing started for FTP");
+            log.info("Thread Id:" + Thread.currentThread().getId() + " File writing started for FTP");
 
-            log.debug("Thread Id:" + Thread.currentThread().getId() + " File on the server is, FTP:"+remoteFileSize);
+            log.info("Thread Id:" + Thread.currentThread().getId() + " File on the server is, FTP:"+remoteFileSize);
 
             FileOutputStream out = new FileOutputStream(file.get());
 
@@ -68,19 +67,18 @@ public class FTPService implements FileDownloaderService {
 
             fileSize = file.get().length();
 
-            log.debug("Thread Id:" + Thread.currentThread().getId() + " FTP File written successfully/partially, remote file size:"+remoteFileSize+" and written file size:"+fileSize);
+            log.info("Thread Id:" + Thread.currentThread().getId() + " FTP File written successfully/partially, remote file size:"+remoteFileSize+" and written file size:"+fileSize);
 
             return file;
 
         } catch (Exception e) {
-
-            System.err.println(e);
+             log.warning(e.toString());
         }
         finally {
 
             if(remoteFileSize!=fileSize){
 
-                log.debug("Thread Id:" + Thread.currentThread().getId() + " FTP File size miss matches, going to delete the partial file, Size on Server:"+remoteFileSize+" On Local:"+fileSize);
+                log.info("Thread Id:" + Thread.currentThread().getId() + " FTP File size miss matches, going to delete the partial file, Size on Server:"+remoteFileSize+" On Local:"+fileSize);
 
                 throw new RuntimeException("File size miss matches");
 

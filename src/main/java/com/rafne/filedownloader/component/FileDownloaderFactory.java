@@ -5,18 +5,17 @@ import com.rafne.filedownloader.service.FileDownloaderService;
 import com.rafne.filedownloader.service.impl.FTPService;
 import com.rafne.filedownloader.service.impl.HTTPSService;
 import com.rafne.filedownloader.service.impl.SFTPService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 public class FileDownloaderFactory {
 
-    static Logger log = LoggerFactory.getLogger(FileDownloaderFactory.class);
+    static java.util.logging.Logger log = Logger.getLogger(FileDownloaderFactory.class.getName());
 
     final static Map<Protocol, Supplier<FileDownloaderService>> map;
 
@@ -30,7 +29,7 @@ public class FileDownloaderFactory {
 
     public Optional<FileDownloaderService> getFileDownloaderService(String protocol) {
 
-        log.debug("Thread Id:" + Thread.currentThread().getId() +"getFileUploaderService");
+        log.finest("Thread Id:" + Thread.currentThread().getId() +"getFileUploaderService");
         Supplier<FileDownloaderService> fileDownloaderServiceSupplier = null;
 
         try {
@@ -39,7 +38,7 @@ public class FileDownloaderFactory {
 
         } catch (IllegalArgumentException e) {
 
-            log.error("Thread Id:" + Thread.currentThread().getId() +"Oh oh! The protocol is not supported, " + protocol.toUpperCase());
+            log.warning("Thread Id:" + Thread.currentThread().getId() +"Oh oh! The protocol is not supported, " + protocol.toUpperCase());
             throw e;
         }
 
@@ -50,7 +49,7 @@ public class FileDownloaderFactory {
 
     public Optional<FileDownloaderService> getFileDownloaderServiceProxy(String protocol) {
 
-        log.error("Thread Id:" + Thread.currentThread().getId() +"getFileDownloaderServiceProxy");
+        log.finest("Thread Id:" + Thread.currentThread().getId() +"getFileDownloaderServiceProxy");
         Supplier<FileDownloaderService> fileDownloaderServiceSupplier = null;
 
         try {
