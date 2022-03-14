@@ -2,30 +2,36 @@ package com.rafne.filedownloader.proxy;
 
 import com.rafne.filedownloader.component.FileDownloaderFactory;
 import com.rafne.filedownloader.service.FileDownloaderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.Optional;
 import java.util.logging.Logger;
 
 @Component
-public interface FileDownloaderProxy {
+public class FileDownloaderProxy {
 
     static Logger log = Logger.getLogger(FileDownloaderProxy.class.getName());
 
-    static final FileDownloaderFactory factory = new FileDownloaderFactory();
+    @Autowired
+    FileDownloaderFactory factory;
 
-    static final String dest = "C:\\Users\\muhammed.rafneesh\\Documents\\Destination\\";
+    @Value("${location.path}")
+    String destinationDirectory;
 
-    static boolean makeDirectory(String destination) {
+    @PostConstruct
+    void init() {
 
-        log.warning("Thread Id:" + Thread.currentThread().getId() + " Creating/verifying the Destination Folder:"+destination);
+        log.warning(" Creating/verifying the Destination Folder Starts:"+destinationDirectory);
 
         try {
 
             File dstFile = null;
             // check the directory for existence.
-            String dstFolder = destination.substring(0, destination.lastIndexOf(File.separator));
+            String dstFolder = destinationDirectory.substring(0, destinationDirectory.lastIndexOf(File.separator));
             if (!(dstFolder.endsWith(File.separator) || dstFolder.endsWith("/")))
                 dstFolder += File.separator;
 
@@ -35,38 +41,39 @@ public interface FileDownloaderProxy {
                 dstFile.mkdirs();
             }
 
+            log.warning(" Creating/verifying the Destination Folder Done");
+
         } catch (Exception e) {
-            log.warning("Thread Id:" + Thread.currentThread().getId() + " Error creating/accessing the destination folder");
+            log.warning(" Error creating/accessing the destination folder");
             throw e;
         }
-        return true;
+
     }
 
-    static void downloadFile(String fullFilePath) {
+    public void downloadFile(String fullFilePath) {
 
         Optional<File> result = Optional.empty();
-
-        if (!makeDirectory(dest)) {
-            log.warning("Thread Id:" + Thread.currentThread().getId() + " Failed at directory creation");
-        }
 
         try {
 
             Optional<FileDownloaderService> service = factory.getFileDownloaderService(fullFilePath.split(":")[0]);
 
-            result = service.get().write(fullFilePath, dest);
+            result = service.get().download(fullFilePath, destinationDirectory);
 
         } catch (Exception e) {
-            log.warning("Thread Id:" + Thread.currentThread().getId() +"File writing failed");
-            deleteFile(result.get());
+
+            log.warning("Thread Id:" + Thread.currentThread().getId() +" File writing failed => "+e);
+
+            if(result.isPresent())
+                deleteFile(result.get());
         }
 
-        log.info("Thread Id:" + Thread.currentThread().getId() + (result.isPresent() ? " File has been successfully written to the destination!" : Thread.currentThread().getId() + " Failed for the protocol!" + fullFilePath.split(":")[0]));
+        log.info("Thread Id:" + Thread.currentThread().getId() + (result.isPresent() ? " File has been successfully written to the destination!" :  " Failed for the protocol => " + fullFilePath.split(":")[0]));
 
     }
 
 
-    static boolean deleteFile(File file) {
+    boolean deleteFile(File file) {
 
         log.finest("Thread Id:" + Thread.currentThread().getId() + "Going for File Deletion If Exists");
         try {
@@ -77,8 +84,9 @@ public interface FileDownloaderProxy {
             log.warning("Thread Id:" + Thread.currentThread().getId() + "File Deleted Successfully/Not exists");
 
             return true;
+
         } catch (Exception e) {
-            log.warning("Thread Id:" + Thread.currentThread().getId() + " info deleting the file");
+            log.warning("Thread Id:" + Thread.currentThread().getId() + " error deleting the file"+e);
         }
         return false;
     }

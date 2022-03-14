@@ -1,6 +1,8 @@
 package com.rafne.filedownloader;
 
 import com.rafne.filedownloader.proxy.FileDownloaderProxy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -12,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
-public class FileDownloaderApplication {
+public class FileDownloaderApplication implements CommandLineRunner {
 
 
 	static{
@@ -24,16 +26,23 @@ public class FileDownloaderApplication {
 
 	private final static Logger log = Logger.getLogger(FileDownloaderApplication.class.getName());
 
+	@Autowired
+	FileDownloaderProxy fileDownloaderProxy;
+
 	public static void main(String[] args) {
 
-
 		SpringApplication.run(FileDownloaderApplication.class, args);
+
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
 
 		log.info("FileUploaderFactory: STARTS");
 
 		ExecutorService executor = Executors.newCachedThreadPool();
 
-		Arrays.asList(args).forEach((item)-> executor.execute(()-> FileDownloaderProxy.downloadFile(item)));
+		Arrays.asList(args).forEach((item)-> executor.execute(()-> fileDownloaderProxy.downloadFile(item)));
 
 		executor.shutdown();
 		// Wait until all threads are finish
@@ -46,6 +55,6 @@ public class FileDownloaderApplication {
 		log.info("FileUploaderFactory: Finished all threads: ENDS");
 
 		System.exit(0);
-	}
 
+	}
 }

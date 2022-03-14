@@ -1,9 +1,11 @@
 package com.rafne.filedownloader.service.impl;
 
 import com.rafne.filedownloader.service.FileDownloaderService;
+import com.rafne.filedownloader.util.FileDownloaderUtils;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.asynchttpclient.Dsl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -15,6 +17,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
@@ -22,12 +25,11 @@ public class FTPService implements FileDownloaderService {
 
     static Logger log = Logger.getLogger(FTPService.class.getName());
 
-    AsyncHttpClient client = Dsl.asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setReadTimeout(Integer.MAX_VALUE));
+    @Autowired
+    FileDownloaderUtils fileDownloaderUtils;
 
     @Override
-    public Optional<File> write(String URL_LOCATION, String LOCAL_FILE) {
-
-        Optional<File> file = Optional.of(new File(LOCAL_FILE + Thread.currentThread().getId()+ "_"+System.currentTimeMillis()+"_"+ URL_LOCATION.split("/")[URL_LOCATION.split("/").length - 1]));
+    public Optional<File> download(String URL_LOCATION, String LOCAL_FILE) {
 
         long remoteFileSize = -1;
 
@@ -42,7 +44,7 @@ public class FTPService implements FileDownloaderService {
 
                 log.info("Thread Id:" +Thread.currentThread().getId() + " File on the server is empty, FTP");
 
-                return file;
+                throw new RuntimeException("File on the server is empty, unable to download");
             }
 
 
@@ -51,6 +53,8 @@ public class FTPService implements FileDownloaderService {
             log.info("Thread Id:" + Thread.currentThread().getId() + " File writing started for FTP");
 
             log.info("Thread Id:" + Thread.currentThread().getId() + " File on the server is, FTP:"+remoteFileSize);
+
+            Optional<File> file = Optional.of(fileDownloaderUtils.createFile(String.valueOf(Thread.currentThread().getId()),LOCAL_FILE,URL_LOCATION));
 
             FileOutputStream out = new FileOutputStream(file.get());
 
@@ -74,6 +78,7 @@ public class FTPService implements FileDownloaderService {
 
         } catch (Exception e) {
              log.warning(e.toString());
+             throw new RuntimeException("File writing fails ",e);
         }
         finally {
 
@@ -86,7 +91,6 @@ public class FTPService implements FileDownloaderService {
             }
         }
 
-        return file;
 
     }
 

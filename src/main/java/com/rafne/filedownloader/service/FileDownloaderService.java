@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface FileDownloaderService {
 
-    public Optional<File> write(String filePath, String destination);
+    public Optional<File> download(String filePath, String destination);
 
     public long getFileSize(String filePath);
 }

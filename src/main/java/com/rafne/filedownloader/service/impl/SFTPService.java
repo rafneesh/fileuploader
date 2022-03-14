@@ -2,6 +2,8 @@ package com.rafne.filedownloader.service.impl;
 
 import com.jcraft.jsch.*;
 import com.rafne.filedownloader.service.FileDownloaderService;
+import com.rafne.filedownloader.util.FileDownloaderUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -14,10 +16,11 @@ public class SFTPService implements FileDownloaderService {
 
     static Logger log = Logger.getLogger(SFTPService.class.getName());
 
-    @Override
-    public Optional<File> write(String URL_LOCATION, String LOCAL_FILE) {
+    @Autowired
+    FileDownloaderUtils fileDownloaderUtils;
 
-        Optional<File> file = Optional.of(new File(LOCAL_FILE + Thread.currentThread().getId()+ "_"+System.currentTimeMillis()+"_"+ URL_LOCATION.split("/")[URL_LOCATION.split("/").length - 1]));
+    @Override
+    public Optional<File> download(String URL_LOCATION, String LOCAL_FILE) {
 
         long remoteFileSize = -1;
 
@@ -30,8 +33,8 @@ public class SFTPService implements FileDownloaderService {
             if(remoteFileSize<=0){
 
                 log.info("Thread Id:" +Thread.currentThread().getId() + " File on the server is empty, HTTP/HTTPS");
+                throw new RuntimeException("File on the server is empty, unable to download");
 
-                return file;
             }
 
             log.info("Thread Id:" + Thread.currentThread().getId() + " File writing started for SFTP");
@@ -58,6 +61,9 @@ public class SFTPService implements FileDownloaderService {
             Channel channel = session.openChannel("sftp");
             channel.connect();
             ChannelSftp sftpChannel = (ChannelSftp) channel;
+
+            Optional<File> file = Optional.of(fileDownloaderUtils.createFile(String.valueOf(Thread.currentThread().getId()),LOCAL_FILE,URL_LOCATION));
+
             sftpChannel.get(source, file.get().toString());
             SftpATTRS sftpATTRS = sftpChannel.lstat(source);
             sftpChannel.exit();
