@@ -19,8 +19,6 @@ public interface FileDownloaderProxy {
 
     static boolean makeDirectory(String destination) {
 
-        boolean status = false;
-
         log.warning("Thread Id:" + Thread.currentThread().getId() + " Creating/verifying the Destination Folder:"+destination);
 
         try {
@@ -37,14 +35,11 @@ public interface FileDownloaderProxy {
                 dstFile.mkdirs();
             }
 
-            status = true;
-
         } catch (Exception e) {
             log.warning("Thread Id:" + Thread.currentThread().getId() + " Error creating/accessing the destination folder");
-            status = false;
             throw e;
         }
-        return status;
+        return true;
     }
 
     static void downloadFile(String fullFilePath) {
