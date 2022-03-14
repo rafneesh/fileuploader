@@ -50,7 +50,7 @@ public class FileDownloaderProxy {
 
     }
 
-    public void downloadFile(String fullFilePath) {
+    public boolean downloadFile(String fullFilePath) {
 
         Optional<File> result = Optional.empty();
 
@@ -69,7 +69,7 @@ public class FileDownloaderProxy {
         }
 
         log.info("Thread Id:" + Thread.currentThread().getId() + (result.isPresent() ? " File has been successfully written to the destination!" :  " Failed for the protocol => " + fullFilePath.split(":")[0]));
-
+        return result.isPresent();
     }
 
 

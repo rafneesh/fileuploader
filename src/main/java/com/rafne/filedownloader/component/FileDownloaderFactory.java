@@ -8,7 +8,6 @@ import com.rafne.filedownloader.service.impl.SFTPService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.logging.Logger;

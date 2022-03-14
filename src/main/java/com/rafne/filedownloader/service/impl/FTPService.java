@@ -2,9 +2,6 @@ package com.rafne.filedownloader.service.impl;
 
 import com.rafne.filedownloader.service.FileDownloaderService;
 import com.rafne.filedownloader.util.FileDownloaderUtils;
-import org.asynchttpclient.AsyncHttpClient;
-import org.asynchttpclient.DefaultAsyncHttpClientConfig;
-import org.asynchttpclient.Dsl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +14,6 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service

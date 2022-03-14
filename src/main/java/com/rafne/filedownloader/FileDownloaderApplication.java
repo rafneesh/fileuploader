@@ -49,7 +49,7 @@ public class FileDownloaderApplication implements CommandLineRunner {
 		try {
 			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 		} catch (InterruptedException e) {
-			log.warning("FileUploaderFactory: InterruptedException");
+			log.warning("FileUploaderFactory: InterruptedException => "+e);
 		}
 
 		log.info("FileUploaderFactory: Finished all threads: ENDS");
