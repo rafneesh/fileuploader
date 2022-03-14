@@ -1,7 +1,6 @@
 package com.rafne.filedownloader.proxy;
 
 import com.rafne.filedownloader.component.FileDownloaderFactory;
-import com.rafne.filedownloader.config.PropertySingleton;
 import com.rafne.filedownloader.service.FileDownloaderService;
 import org.springframework.stereotype.Component;
 
