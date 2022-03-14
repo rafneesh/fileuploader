@@ -2,15 +2,17 @@ package com.rafne.filedownloader.service.impl;
 
 import com.jcraft.jsch.*;
 import com.rafne.filedownloader.service.FileDownloaderService;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.net.URI;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+@Service
 public class SFTPService implements FileDownloaderService {
 
-    static java.util.logging.Logger log = Logger.getLogger(SFTPService.class.getName());
+    static Logger log = Logger.getLogger(SFTPService.class.getName());
 
     @Override
     public Optional<File> write(String URL_LOCATION, String LOCAL_FILE) {

@@ -4,6 +4,7 @@ import com.rafne.filedownloader.service.FileDownloaderService;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.asynchttpclient.Dsl;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,9 +18,10 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+@Service
 public class HTTPSService implements FileDownloaderService {
 
-    static java.util.logging.Logger log = Logger.getLogger(HTTPSService.class.getName());
+    static Logger log = Logger.getLogger(HTTPSService.class.getName());
 
     AsyncHttpClient client = Dsl.asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setReadTimeout(Integer.MAX_VALUE));
 

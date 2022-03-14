@@ -3,18 +3,26 @@ package com.rafne.filedownloader.proxy;
 import com.rafne.filedownloader.component.FileDownloaderFactory;
 import com.rafne.filedownloader.config.PropertySingleton;
 import com.rafne.filedownloader.service.FileDownloaderService;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+@Component
 public interface FileDownloaderProxy {
 
     static Logger log = Logger.getLogger(FileDownloaderProxy.class.getName());
 
     static final FileDownloaderFactory factory = new FileDownloaderFactory();
 
+    static final String dest = "C:\\Users\\muhammed.rafneesh\\Documents\\Destination\\";
+
     static boolean makeDirectory(String destination) {
+
+        boolean status = false;
+
+        log.warning("Thread Id:" + Thread.currentThread().getId() + " Creating/verifying the Destination Folder:"+destination);
 
         try {
 
@@ -29,18 +37,22 @@ public interface FileDownloaderProxy {
             if (!dstFile.exists()) {
                 dstFile.mkdirs();
             }
-            return true;
+
+            status = true;
+
         } catch (Exception e) {
             log.warning("Thread Id:" + Thread.currentThread().getId() + " Error creating/accessing the destination folder");
+            status = false;
+            throw e;
         }
-        return false;
+        return status;
     }
 
     static void downloadFile(String fullFilePath) {
 
         Optional<File> result = Optional.empty();
 
-        if (!makeDirectory(PropertySingleton.DESTINATION)) {
+        if (!makeDirectory(dest)) {
             log.warning("Thread Id:" + Thread.currentThread().getId() + " Failed at directory creation");
         }
 
@@ -48,7 +60,7 @@ public interface FileDownloaderProxy {
 
             Optional<FileDownloaderService> service = factory.getFileDownloaderService(fullFilePath.split(":")[0]);
 
-            result = service.get().write(fullFilePath, PropertySingleton.DESTINATION);
+            result = service.get().write(fullFilePath, dest);
 
         } catch (Exception e) {
             log.warning("Thread Id:" + Thread.currentThread().getId() +"File writing failed");

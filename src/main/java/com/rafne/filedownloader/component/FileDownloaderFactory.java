@@ -5,6 +5,7 @@ import com.rafne.filedownloader.service.FileDownloaderService;
 import com.rafne.filedownloader.service.impl.FTPService;
 import com.rafne.filedownloader.service.impl.HTTPSService;
 import com.rafne.filedownloader.service.impl.SFTPService;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -13,9 +14,10 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+@Component
 public class FileDownloaderFactory {
 
-    static java.util.logging.Logger log = Logger.getLogger(FileDownloaderFactory.class.getName());
+    static Logger log = Logger.getLogger(FileDownloaderFactory.class.getName());
 
     final static Map<Protocol, Supplier<FileDownloaderService>> map;
 
@@ -58,7 +60,7 @@ public class FileDownloaderFactory {
 
         } catch (IllegalArgumentException e) {
 
-            System.out.println("Oh oh! The protocol is not supported, " + protocol.toUpperCase());
+            log.warning("Oh oh! The protocol is not supported, " + protocol.toUpperCase());
             throw e;
         }
 
