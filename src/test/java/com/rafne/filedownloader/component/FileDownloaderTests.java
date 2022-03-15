@@ -1,12 +1,8 @@
-package com.rafne.filedownloader.proxy;
+package com.rafne.filedownloader.component;
 
-import com.rafne.filedownloader.component.FileDownloaderFactory;
-import com.rafne.filedownloader.component.FileDownloader;
-import com.rafne.filedownloader.enums.Protocol;
 import com.rafne.filedownloader.service.impl.FTPService;
 import com.rafne.filedownloader.service.impl.HTTPSService;
 import com.rafne.filedownloader.service.impl.SFTPService;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
@@ -14,12 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -252,6 +246,5 @@ class FileDownloaderTests {
         Assert.assertFalse(result);
 
     }
-
 
 }

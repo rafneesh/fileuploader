@@ -31,8 +31,6 @@ public class FileDownloaderFactory {
         log.info("Thread Id:" + Thread.currentThread().getId() + "getFileUploaderService");
         Supplier<FileDownloaderService> fileDownloaderServiceSupplier = null;
 
-        log.warning("Thread Id:" + Thread.currentThread().getId() + "Oh oh! The protocol is not supported, " + protocol.toUpperCase());
-
         switch (Protocol.valueOf(protocol.toUpperCase())) {
             case HTTP:
             case HTTPS:

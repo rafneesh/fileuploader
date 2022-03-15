@@ -45,4 +45,22 @@ public class FileDownloaderUtils {
         log.info(" Creating/verifying the Destination Folder Done");
 
     }
+
+    public boolean deleteFile(File file) {
+
+        log.finest("Thread Id:" + Thread.currentThread().getId() + "Going for File Deletion If Exists");
+        try {
+
+            if(file.exists())
+                file.delete();
+
+            log.warning("Thread Id:" + Thread.currentThread().getId() + "File Deleted Successfully/Not exists");
+
+            return true;
+
+        } catch (Exception e) {
+            log.warning("Thread Id:" + Thread.currentThread().getId() + " error deleting the file"+e);
+        }
+        return false;
+    }
 }

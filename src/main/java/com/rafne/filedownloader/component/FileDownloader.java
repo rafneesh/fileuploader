@@ -53,7 +53,7 @@ public class FileDownloader {
             log.warning("Thread Id:" + Thread.currentThread().getId() +" File writing failed => "+e);
 
             if(result.isPresent())
-                deleteFile(result.get());
+                fileDownloaderUtils.deleteFile(result.get());
         }
 
         if(result.isPresent())
@@ -63,25 +63,5 @@ public class FileDownloader {
 
         return result.isPresent();
     }
-
-
-    boolean deleteFile(File file) {
-
-        log.finest("Thread Id:" + Thread.currentThread().getId() + "Going for File Deletion If Exists");
-        try {
-
-            if(file.exists())
-                file.delete();
-
-            log.warning("Thread Id:" + Thread.currentThread().getId() + "File Deleted Successfully/Not exists");
-
-            return true;
-
-        } catch (Exception e) {
-            log.warning("Thread Id:" + Thread.currentThread().getId() + " error deleting the file"+e);
-        }
-        return false;
-    }
-
 
 }
