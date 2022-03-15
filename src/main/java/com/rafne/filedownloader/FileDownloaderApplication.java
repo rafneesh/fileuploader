@@ -1,6 +1,6 @@
 package com.rafne.filedownloader;
 
-import com.rafne.filedownloader.proxy.FileDownloaderProxy;
+import com.rafne.filedownloader.component.FileDownloader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -27,7 +27,7 @@ public class FileDownloaderApplication implements CommandLineRunner {
 	private final static Logger log = Logger.getLogger(FileDownloaderApplication.class.getName());
 
 	@Autowired
-	FileDownloaderProxy fileDownloaderProxy;
+	FileDownloader fileDownloaderProxy;
 
 	public static void main(String[] args) {
 

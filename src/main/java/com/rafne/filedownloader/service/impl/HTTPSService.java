@@ -40,7 +40,7 @@ public class HTTPSService implements FileDownloaderService {
 
                 log.info("Thread Id:" +Thread.currentThread().getId() + " File on the server is empty, HTTP/HTTPS");
 
-                throw new RuntimeException("File on the server is empty, unable to download");
+                throw new RuntimeException("File on the server is empty");
             }
 
             Optional<URL> url = Optional.empty();

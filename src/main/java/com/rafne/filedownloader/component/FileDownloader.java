@@ -1,7 +1,7 @@
-package com.rafne.filedownloader.proxy;
+package com.rafne.filedownloader.component;
 
-import com.rafne.filedownloader.component.FileDownloaderFactory;
 import com.rafne.filedownloader.service.FileDownloaderService;
+import com.rafne.filedownloader.util.FileDownloaderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,9 +12,9 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 @Component
-public class FileDownloaderProxy {
+public class FileDownloader {
 
-    static Logger log = Logger.getLogger(FileDownloaderProxy.class.getName());
+    static Logger log = Logger.getLogger(FileDownloader.class.getName());
 
     @Autowired
     FileDownloaderFactory factory;
@@ -22,31 +22,17 @@ public class FileDownloaderProxy {
     @Value("${location.path}")
     String destinationDirectory;
 
+    @Autowired
+    FileDownloaderUtils fileDownloaderUtils;
+
     @PostConstruct
-    void init() {
+    public void init() {
 
-        log.warning(" Creating/verifying the Destination Folder Starts:"+destinationDirectory);
+        log.warning(" FileDownloader Init Starts: "+destinationDirectory);
 
-        try {
+        fileDownloaderUtils.makeDirectory(destinationDirectory);
 
-            File dstFile = null;
-            // check the directory for existence.
-            String dstFolder = destinationDirectory.substring(0, destinationDirectory.lastIndexOf(File.separator));
-            if (!(dstFolder.endsWith(File.separator) || dstFolder.endsWith("/")))
-                dstFolder += File.separator;
-
-            // Creates the destination folder if doesn't not exists
-            dstFile = new File(dstFolder);
-            if (!dstFile.exists()) {
-                dstFile.mkdirs();
-            }
-
-            log.warning(" Creating/verifying the Destination Folder Done");
-
-        } catch (Exception e) {
-            log.warning(" Error creating/accessing the destination folder");
-            throw e;
-        }
+        log.info(" FileDownloader Init Done");
 
     }
 
@@ -55,6 +41,8 @@ public class FileDownloaderProxy {
         Optional<File> result = Optional.empty();
 
         try {
+
+            log.warning("Thread Id:" + Thread.currentThread().getId() +" File writing  => "+fullFilePath+" => "+fullFilePath.split(":")[0]);
 
             Optional<FileDownloaderService> service = factory.getFileDownloaderService(fullFilePath.split(":")[0]);
 
@@ -68,7 +56,11 @@ public class FileDownloaderProxy {
                 deleteFile(result.get());
         }
 
-        log.info("Thread Id:" + Thread.currentThread().getId() + (result.isPresent() ? " File has been successfully written to the destination!" :  " Failed for the protocol => " + fullFilePath.split(":")[0]));
+        if(result.isPresent())
+            log.info("Thread Id:" + Thread.currentThread().getId() +  " File has been successfully written to the destination!") ;
+        else
+            log.warning("Thread Id:" + Thread.currentThread().getId() +  " Failed for the protocol => " + fullFilePath.split(":")[0]);
+
         return result.isPresent();
     }
 
